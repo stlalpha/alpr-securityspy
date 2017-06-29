@@ -54,4 +54,4 @@ search_array "7AB66Y" "${PLATES[@]}"
 echo $?
 
 #test
-#test2
+#test2	
