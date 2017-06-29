@@ -1,5 +1,5 @@
 #!/bin/sh
-
+#Quick and dirty openalpr (github.com/openalpr demo integration with cameraspy )
 usage()
 {
 echo ""
@@ -19,6 +19,12 @@ acquire_plates()
 	fi
 }
 
+search_array() {
+	local x
+	for x in "${@:2}"; do [[ "$x" == "$1" ]] && return 0; done
+	return 1
+}
+
 IMAGEFILE=$1
 
 #main
@@ -36,8 +42,13 @@ acquire_plates ${IMAGEFILE}
 for i in ${PLATES[@]}; do
 	echo "Plate #${PLATECOUNT}"
 	echo "Value is: ${i}"
-	PLATECOUNT=$(expr ${PLATECOUNT} + 1)
+	((PLATECOUNT++)
+
 done
 
+#action logic
 
+
+search_array "7AB66Y" "${PLATES[@]}"
+echo $?
 
