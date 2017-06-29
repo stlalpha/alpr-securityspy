@@ -19,6 +19,7 @@ acquire_plates()
 	fi
 }
 
+
 search_array() {
 	local x
 	for x in "${@:2}"; do [[ "$x" == "$1" ]] && return 0; done
@@ -52,3 +53,4 @@ done
 search_array "7AB66Y" "${PLATES[@]}"
 echo $?
 
+#test
