@@ -1,5 +1,8 @@
 #!/bin/sh
 #Quick and dirty openalpr (github.com/openalpr demo integration with cameraspy )
+#github.com/stlalpha
+#
+
 usage()
 {
 echo ""
@@ -52,6 +55,3 @@ done
 
 search_array "7AB66Y" "${PLATES[@]}"
 echo $?
-
-#test
-#test2	
