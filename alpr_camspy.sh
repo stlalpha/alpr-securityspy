@@ -4,7 +4,7 @@ usage()
 {
 echo ""
 echo "Usage: $0 filename"
-echo "grady@stalpgo.com"
+echo "github.com/stlalpha"
 echo ""
 exit 1
 }
