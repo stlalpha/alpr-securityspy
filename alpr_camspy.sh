@@ -12,6 +12,12 @@ echo ""
 exit 1
 }
 
+
+whereitis()
+{
+	grep $1 plate_state.txt | wc -l 
+}
+
 check_alpr()
 {
 	ALPR_BIN=$(which alpr)
@@ -56,10 +62,21 @@ PLATECOUNT=0
 acquire_plates ${IMAGEFILE}
 
 
-for i in ${PLATES[@]}; do echo "${TIME_STAMP} ${i}" >> plate_log.txt && echo "${i}" >> plate_state.txt && cat plate_state.txt | uniq > plate_state_$$.txt && mv plate_state_$$.txt plate_state.txt && ((PLATECOUNT++)) ; done 
+for i in ${PLATES[@]}; do 
+	echo "${TIME_STAMP} ${i}" >> plate_log.txt 
+	echo "${i}" >> plate_state.txt 
+	cat plate_state.txt | uniq > plate_state_$$.txt 
+	mv plate_state_$$.txt plate_state.txt && ((PLATECOUNT++)) ; 
+done 
 	
 
 
+#STATE logic - license plate mapping to human
+GRADY=$(whereitis 7AB66Y)
+ANGIE=$(whereitis IJD865)
+
+echo GRADY = ${GRADY}
+echo ANGIE = ${ANGIE}
 
 
 #search_array "7AB66Y" "${PLATES[@]}"
