@@ -1,2 +1,2 @@
-# alpr-camspy
-ALPR integration with Cameraspy
+# alpr-securityspy
+ALPR integration with Securityspy
