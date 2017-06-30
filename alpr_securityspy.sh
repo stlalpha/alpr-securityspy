@@ -23,14 +23,14 @@ exit 1
 
 whereitis()
 {
-	grep $1 plate_state.txt | wc -l 
+	grep  $1 plate_state.txt | wc -l 
 }
 
 check_alpr()
 {
 	ALPR_BIN=$(which alpr)
-	result=$?
-	if [ -z ${ALPR_BIN} ] ; then
+
+	if [ -z "${ALPR_BIN}" ] ; then
 		echo "
 
 		Please install alpr binaries using brew:
@@ -48,8 +48,8 @@ check_alpr()
 
 acquire_plates()
 {
-	PLATES=$(echo "$(for i in $(ls *.jpg) ; do alpr --topn 1 $i 2>/dev/null | grep -v plate | awk '{print $2}'; done)" | sort -u)
-
+	PLATES=$(for i in *.jpg ; do alpr --topn 1 "${i}" 2>/dev/null | grep -v plage | awk '{print $2}'; done | sort -u)
+	
 	if [ -z "${PLATES}" ] ; then
 		exit 1
 	fi
@@ -79,7 +79,7 @@ PLATECOUNT=0
 acquire_plates
 
 
-for i in ${PLATES[@]}; do 
+for i in "${PLATES[@]}"; do 
 	echo "${TIME_STAMP} ${i}" >> plate_log.txt 
 	echo "${i}" >> plate_state.txt 
 	cat plate_state.txt | uniq > plate_state_$$.txt 
@@ -95,13 +95,13 @@ DRIVER1=$(whereitis XXXYYY)
 DRIVER2=$(whereitis YYYZZZ)
 
 #DUMP PRESENCE STATE OF DRIVER PLATES - 1=PRESENT 0=ABSENT
-echo DRIVER1 = ${DRIVER1}
-echo DRIVER2 = ${DRIVER2}
+echo DRIVER1 = "${DRIVER1}"
+echo DRIVER2 = "${DRIVER2}"
 
 
 #DRIVER1_ACTIONS
 
-if [ ${DRIVER1} = 1 ]; then
+if [ "${DRIVER1}" = 1 ]; then
 	echo "DRIVER1 IS IN THE HOUSE"
 fi
  
