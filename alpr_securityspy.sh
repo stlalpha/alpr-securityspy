@@ -60,7 +60,7 @@ search_array() {
 	return 1
 }
 
-IMAGEFILE=$1
+
 TIME_STAMP=$(date +%m-%d-%Y-%H:%M)
 
 #main
@@ -74,7 +74,7 @@ check_alpr
 
 PLATECOUNT=0
 
-acquire_plates ${IMAGEFILE}
+acquire_plates
 
 
 for i in ${PLATES[@]}; do 
