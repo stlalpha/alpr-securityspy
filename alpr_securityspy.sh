@@ -48,7 +48,7 @@ check_alpr()
 
 acquire_plates()
 {
-	PLATES=$(for i in *.jpg ; do alpr --topn 1 "${i}" 2>/dev/null | grep -v plage | awk '{print $2}'; done | sort -u)
+	PLATES=$(for i in *.jpg ; do alpr --topn 1 "${i}" 2>/dev/null | grep -v plate | awk '{print $2}'; done | sort -u)
 	
 	if [ -z "${PLATES}" ] ; then
 		exit 1
@@ -83,8 +83,8 @@ acquire_plates
 for i in "${PLATES[@]}"; do 
 	echo "${TIME_STAMP} ${i}" >> plate_log.txt 
 	echo "${i}" >> plate_state.txt 
-	cat plate_state.txt | uniq > plate_state_$$.txt 
-	mv plate_state_$$.txt plate_state.txt && ((PLATECOUNT++)) ; 
+	cat plate_state.txt | uniq > plate_state_sorting.txt 
+	mv plate_state_sorting.txt plate_state.txt && ((PLATECOUNT++)) ; 
 done 
 	
 
@@ -93,7 +93,7 @@ done
 
 #DRIVER1 = LICENSEPLATENUMBER
 DRIVER1=$(whereitis XXXYYY)
-DRIVER2=$(whereitis YYYZZZ)
+DRIVER2=$(whereitis YYYXXX)
 
 #DUMP PRESENCE STATE OF DRIVER PLATES - 1=PRESENT 0=ABSENT
 echo DRIVER1 = "${DRIVER1}"
