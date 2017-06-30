@@ -1,7 +1,9 @@
 #!/bin/sh
-#Quick and dirty openalpr (github.com/openalpr) demo integration for standalone use or with securityspy ()
-# http://github.com/stlalpha/alpr-securityspy
 #
+#http://github.com/stlalpha/alpr-securityspy
+#
+#Quick and dirty openalpr (github.com/openalpr) demo integration for standalone use or with securityspy (http://bensoftware.com/securityspy/)
+# 
 #This script expects to be fired inside the directory that cameraspy is using to dump your movie and still capture jpegs into.
 #Just fire this as an action after motion is detected wherever you want to monitor car presence.  I use this to fire inside my garage 
 #to announce arrival and set state for the presence or absence of a vehicle.
