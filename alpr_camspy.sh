@@ -30,8 +30,8 @@ check_alpr()
 
 acquire_plates()
 {
-	PLATES=$(for i in $(ls *.jpg) ; do alpr --topn 1 ${IMAGEFILE} 2>/dev/null | grep -v plate | awk '{print $2}'; done)
-
+	PLATES=$(for i in $(ls *.jpg) ; do alpr --topn 1 ${i} 2>/dev/null | grep -v plate | awk '{print $2}'; done)
+	echo "PLATES: ${PLATES}"
 	if [ -z ${PLATES} ] ; then
 		exit 1
 	fi
@@ -52,10 +52,10 @@ TIME_STAMP=$(date +%m-%d-%Y-%H:%M)
 
 check_alpr
 
-if [ $# -lt 1 ]; then
-		usage
-		exit 1
-	fi
+#if [ $# -lt 1 ]; then
+#		usage
+#		exit 1
+#	fi
 
 PLATECOUNT=0
 
