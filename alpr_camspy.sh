@@ -72,11 +72,11 @@ done
 
 
 #STATE logic - license plate mapping to human
-GRADY=$(whereitis 7AB66Y)
-ANGIE=$(whereitis IJD865)
+DRIVER1=$(whereitis 7AB66Y)
+DRIVER2=$(whereitis IJD865)
 
-echo GRADY = ${GRADY}
-echo ANGIE = ${ANGIE}
+echo DRIVER1 = ${DRIVER1}
+echo DRIVER2 = ${DRIVER2}
 
 
 #search_array "7AB66Y" "${PLATES[@]}"
