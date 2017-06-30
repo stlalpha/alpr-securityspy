@@ -23,7 +23,7 @@ exit 1
 
 whereitis()
 {
-	grep  $1 plate_state.txt | wc -l 
+	grep  -c "$1" plate_state.txt 
 }
 
 check_alpr()
