@@ -12,6 +12,15 @@ echo ""
 exit 1
 }
 
+check_alpr()
+{
+	ALPR_BIN=$(which alpr)
+	result=$?
+	if [ -z ${ALPR_BIN} ] ; then
+		echo "Please install alpr binaries using brew"
+		exit 1
+	fi
+}
 
 acquire_plates()
 {
@@ -32,6 +41,8 @@ search_array() {
 IMAGEFILE=$1
 
 #main
+
+check_alpr
 
 if [ $# -lt 1 ]; then
 		usage
