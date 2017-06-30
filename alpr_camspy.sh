@@ -39,8 +39,10 @@ search_array() {
 }
 
 IMAGEFILE=$1
+TIME_STAMP=$(date +%m-%d-%Y-%H:%M)
 
 #main
+
 
 check_alpr
 
@@ -54,15 +56,11 @@ PLATECOUNT=0
 acquire_plates ${IMAGEFILE}
 
 
-for i in ${PLATES[@]}; do
-	echo "Plate #${PLATECOUNT}"
-	echo "Value is: ${i}"
-	((PLATECOUNT++)
-
-done
-
-#action logic
+for i in ${PLATES[@]}; do echo "${TIME_STAMP} ${i}" >> plate_log.txt && echo "${i}" >> plate_state.txt && cat plate_state.txt | uniq > plate_state_$$.txt && mv plate_state_$$.txt plate_state.txt && ((PLATECOUNT++)) ; done 
+	
 
 
-search_array "7AB66Y" "${PLATES[@]}"
-echo $?
+
+
+#search_array "7AB66Y" "${PLATES[@]}"
+#echo $?
