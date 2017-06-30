@@ -78,6 +78,7 @@ PLATECOUNT=0
 
 acquire_plates
 
+#populate the plate and state logfiles...
 
 for i in "${PLATES[@]}"; do 
 	echo "${TIME_STAMP} ${i}" >> plate_log.txt 
