@@ -23,7 +23,17 @@ check_alpr()
 	ALPR_BIN=$(which alpr)
 	result=$?
 	if [ -z ${ALPR_BIN} ] ; then
-		echo "Please install alpr binaries using brew"
+		echo "
+
+		Please install alpr binaries using brew:
+		
+		$ brew tap homebrew/science
+		
+		$ brew install openalpr
+		
+		And then re-run the command
+		"
+		
 		exit 1
 	fi
 }
@@ -48,7 +58,6 @@ IMAGEFILE=$1
 TIME_STAMP=$(date +%m-%d-%Y-%H:%M)
 
 #main
-
 
 check_alpr
 
