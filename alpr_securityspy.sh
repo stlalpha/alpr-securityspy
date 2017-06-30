@@ -89,8 +89,8 @@ done
 #STATE logic - license plate mapping to human
 
 #DRIVER1 = LICENSEPLATENUMBER
-DRIVER1=$(whereitis 7AB66Y)
-DRIVER2=$(whereitis IJD865)
+DRIVER1=$(whereitis XXXYYY)
+DRIVER2=$(whereitis YYYZZZ)
 
 #DUMP PRESENCE STATE OF DRIVER PLATES
 echo DRIVER1 = ${DRIVER1}
