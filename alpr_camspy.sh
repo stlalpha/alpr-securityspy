@@ -30,7 +30,7 @@ check_alpr()
 
 acquire_plates()
 {
-	PLATES=$(alpr --topn 1 ${IMAGEFILE} 2>/dev/null | grep -v plate | awk '{print $2}')
+	PLATES=$(for i in $(ls *.jpg) ; do alpr --topn 1 ${IMAGEFILE} 2>/dev/null | grep -v plate | awk '{print $2}'; done)
 
 	if [ -z ${PLATES} ] ; then
 		exit 1
@@ -72,11 +72,16 @@ done
 
 
 #STATE logic - license plate mapping to human
+
 DRIVER1=$(whereitis 7AB66Y)
 DRIVER2=$(whereitis IJD865)
 
 echo DRIVER1 = ${DRIVER1}
 echo DRIVER2 = ${DRIVER2}
+
+
+#DRIVER1_ACTIONS
+#if [ ${DRIVER1} = 1 ]; then
 
 
 #search_array "7AB66Y" "${PLATES[@]}"
