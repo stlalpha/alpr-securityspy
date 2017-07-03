@@ -76,7 +76,8 @@ while [ "$1" != "" ]; do
 done
 
 fetch_images(){
-	for i in "${FETCHURLSTRING[@]}" ; do
+	FETCH_TARGETS=$(echo "${FETCHURLSTRING}" | sed s/,/\ /g)
+	for i in "${FETCH_TARGETS[@]}" ; do
 	curl --silent "${i}" > daemon_fetch.$$.jpg
 	done
 }
@@ -150,7 +151,7 @@ acquire_drivers()
 		else
 		for i in $"{PLATES[@]}"; do 
 		if [ "${DAEMON}" = 0 ] ; then
-		echo "${TIME_STAMP} ${i}" >> plate_log.txt 
+		echo "${TIME_STAMP}" "${i}" >> plate_log.txt 
 	fi
 		echo "${i}" >> plate_state.txt 
 		cat plate_state.txt | uniq > plate_state_sorting.txt 
