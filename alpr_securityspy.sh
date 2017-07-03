@@ -19,7 +19,7 @@ PLATECOUNT=0
 INTERVAL=5
 NUKEJPGS=0
 PLATES_NOOP=0
-
+FETCHIT=0
 
 
  usage()
@@ -45,6 +45,7 @@ while [ "$1" != "" ]; do
             exit
             ;;
         --fetch)
+		   FETCHIT=1
 		   FETCHURLSTRING=${VALUE}
 		   ;;
         --nuke)
@@ -173,7 +174,7 @@ check_alpr
 if [ "${DAEMON}" = 1 ] ; then
 	while true ; do
 		
-		if [ -z "${FETCHURLSTRING}" ] ; then
+		if [ "${FETCHIT}" = 1 ] ; then
 			fetch_images
 		fi
 
