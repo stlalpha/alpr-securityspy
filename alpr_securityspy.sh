@@ -77,7 +77,7 @@ done
 
 fetch_images(){
 	FETCH_TARGETS=$(echo "${FETCHURLSTRING}" | sed s/,/\ /g)
-	for i in "${FETCH_TARGETS[@]}" ; do
+	for i in ${FETCH_TARGETS[@]} ; do
 	curl --silent "${i}" > daemon_fetch.$$.jpg
 	done
 }
