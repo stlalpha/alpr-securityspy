@@ -75,7 +75,7 @@ while [ "$1" != "" ]; do
 done
 
 fetch_images(){
-	curl --silent "${FETCHURLSTRING}"
+	curl --silent "${FETCHURLSTRING}" > daemon_fetch.$$.jpg
 }
 
 
@@ -158,6 +158,8 @@ fi
 
 
 
+#main
+
 TIME_STAMP=$(date +%m-%d-%Y-%H:%M)
 
 
@@ -170,6 +172,11 @@ check_alpr
 
 if [ "${DAEMON}" = 1 ] ; then
 	while true ; do
+		
+		if [ -z "${FETCHURLSTRING}" ] ; then
+			fetch_images
+		fi
+
 		acquire_plates
 		acquire_plate_state
 		if [ "${NUKEJPGS}" -eq 1 ] ; then 
