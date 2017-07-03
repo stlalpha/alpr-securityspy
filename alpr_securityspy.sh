@@ -10,11 +10,15 @@
 #
 #It creates two logfiles - plate_log.txt which is a log of the sighting and date/time-stamp as well as plate_state.txt which is the 
 #current inventory of the viewing area of the camera based on its last motion capture.
+#
+#You can run it with --daemon with --interval=X and every X seconds it will parse the available jpg's for license plates and will update the state file
 
 
 DAEMON=0
 PLATECOUNT=0
 INTERVAL=5
+NUKEJPGS=0
+PLATES_NOOP=0
 
 
 
@@ -25,7 +29,10 @@ INTERVAL=5
     echo ""
     echo "./$0"
     echo "\t-h --help"
-    echo "\t--daemon"
+    echo "\t--fetch=http://user:pass@camera.ip/path/to/jpg"
+    echo "\t--nuke (delete motion captured jpegs)"
+    echo "\t--daemon (run as a state daemon)"
+    echo "\t--platemap=/path/to/platemapfile (path to the textfile that maps a usable name to a plate number"
     echo ""
 }
 
@@ -37,6 +44,12 @@ while [ "$1" != "" ]; do
             usage
             exit
             ;;
+        --fetch)
+		   FETCHURLSTRING=${VALUE}
+		   ;;
+        --nuke)
+		    NUKEJPGS=1
+		    ;;
         --daemon)
             DAEMON=1
             ;;
@@ -61,6 +74,9 @@ while [ "$1" != "" ]; do
     shift
 done
 
+fetch_images(){
+	curl --silent "${FETCHURLSTRING}"
+}
 
 
 whereitis()
@@ -91,10 +107,16 @@ check_alpr()
 acquire_plates()
 {
 	PLATES=$(for i in *.jpg ; do alpr --topn 1 "${i}" 2>/dev/null | grep -v plate | awk '{print $2}'; done | sort -u)
-	
-	if [ -z "${PLATES}" ] ; then
+
+	if [ -z "${PLATES}" ] && [ "${DAEMON}" = 0 ] ; then
+		echo "Sorry - no plate jpegs found in current working directory."
 		exit 1
+	else
+		if [ -z "${PLATES}" ] && [ "${DAEMON}" = 1 ] ; then
+			echo "Nothing to do..."
+			PLATES_NOOP=1
 	fi
+fi
 }
 
 
@@ -120,6 +142,9 @@ acquire_plate_state()
 
 acquire_drivers()
 {
+		if [ "${PLATES_NOOP}" = 1 ] ; then
+			echo "acquire_drivers - nothing to do..."
+		else
 		for i in $"{PLATES[@]}"; do 
 		if [ "${DAEMON}" = 0 ] ; then
 		echo "${TIME_STAMP} ${i}" >> plate_log.txt 
@@ -128,7 +153,7 @@ acquire_drivers()
 		cat plate_state.txt | uniq > plate_state_sorting.txt 
 		mv plate_state_sorting.txt plate_state.txt && ((PLATECOUNT++)) ; 
 		done 
-
+fi
 }
 
 
@@ -147,6 +172,11 @@ if [ "${DAEMON}" = 1 ] ; then
 	while true ; do
 		acquire_plates
 		acquire_plate_state
+		if [ "${NUKEJPGS}" -eq 1 ] ; then 
+			for f in *.jpg ; do
+				[ -e "${f}" ] && rm "${f}"
+			done
+		fi
 		sleep "${INTERVAL}"
 	done
 
@@ -164,6 +194,3 @@ for i in ${DRIVERS} ; do
 	echo "$(echo ${i} | awk -F_ '{print $1}')" = $(whereitis $(echo ${i} | awk -F_ '{print $2}'))
 	export $(echo "${i}" | awk -F_ '{print $1}')=$(whereitis $(echo ${i} | awk -F_ '{print $2}'))
 done
-
-
-
