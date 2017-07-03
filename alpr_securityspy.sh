@@ -46,7 +46,7 @@ while [ "$1" != "" ]; do
             ;;
         --fetch)
 		   FETCHIT=1
-		   FETCHURLSTRING=${VALUE}
+		   FETCHURLSTRING="${VALUE}"
 		   ;;
         --nuke)
 		    NUKEJPGS=1
@@ -76,7 +76,9 @@ while [ "$1" != "" ]; do
 done
 
 fetch_images(){
-	curl --silent "${FETCHURLSTRING}" > daemon_fetch.$$.jpg
+	for i in "${FETCHURLSTRING[@]}" ; do
+	curl --silent "${i}" > daemon_fetch.$$.jpg
+	done
 }
 
 
