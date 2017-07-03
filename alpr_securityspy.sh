@@ -11,14 +11,56 @@
 #It creates two logfiles - plate_log.txt which is a log of the sighting and date/time-stamp as well as plate_state.txt which is the 
 #current inventory of the viewing area of the camera based on its last motion capture.
 
-usage()
+
+DAEMON=0
+PLATECOUNT=0
+INTERVAL=5
+
+
+
+ usage()
 {
-echo ""
-echo "Usage: $0 filename"
-echo "github.com/stlalpha"
-echo ""
-exit 1
+    echo "OpenALPR / SecuritySpy Example Integration"
+    echo "https://github.com/stlalpha/alpr-securityspy"
+    echo ""
+    echo "./$0"
+    echo "\t-h --help"
+    echo "\t--daemon"
+    echo ""
 }
+
+while [ "$1" != "" ]; do
+    PARAM=$(echo $1 | awk -F= '{print $1}')
+    VALUE=$(echo $1 | awk -F= '{print $2}')
+    case $PARAM in
+        -h | --help)
+            usage
+            exit
+            ;;
+        --daemon)
+            DAEMON=1
+            ;;
+        --interval)
+            INTERVAL=${VALUE}
+            ;;
+        --platemap)
+
+#platemap file is a simple textfile format is
+#
+#Name_PlateNumber e.g., Jimmy_IJD865
+
+			PLATEMAPFILE=${VALUE}
+			DRIVERS=$(cat "${PLATEMAPFILE}")
+			;;
+        *)
+            echo "ERROR: unknown parameter \"$PARAM\""
+            usage
+            exit 1
+            ;;
+    esac
+    shift
+done
+
 
 
 whereitis()
@@ -62,47 +104,66 @@ search_array() {
 	return 1
 }
 
+acquire_plate_state()
+{
+		for i in "${PLATES[@]}"; do 
+		if [ "${DAEMON}" = 0 ] ; then
+		echo "${TIME_STAMP} ${i}" >> plate_log.txt 
+	fi
+		echo "${i}" >> plate_state.txt 
+		cat plate_state.txt | uniq > plate_state_sorting.txt 
+		mv plate_state_sorting.txt plate_state.txt && ((PLATECOUNT++)) ; 
+		done 
+
+}
+
+
+acquire_drivers()
+{
+		for i in $"{PLATES[@]}"; do 
+		if [ "${DAEMON}" = 0 ] ; then
+		echo "${TIME_STAMP} ${i}" >> plate_log.txt 
+	fi
+		echo "${i}" >> plate_state.txt 
+		cat plate_state.txt | uniq > plate_state_sorting.txt 
+		mv plate_state_sorting.txt plate_state.txt && ((PLATECOUNT++)) ; 
+		done 
+
+}
+
+
 
 TIME_STAMP=$(date +%m-%d-%Y-%H:%M)
 
-#main
 
 check_alpr
 
-#if [ $# -lt 1 ]; then
-#		usage
-#		exit 1
-#	fi
 
-PLATECOUNT=0
 
-acquire_plates
+#if DAEMON=1 then just keep cycling acquiring the plates every 5 seconds
+#and update the state table only (not the log)
 
-#populate the plate and state logfiles...
+if [ "${DAEMON}" = 1 ] ; then
+	while true ; do
+		acquire_plates
+		acquire_plate_state
+		sleep "${INTERVAL}"
+	done
 
-for i in "${PLATES[@]}"; do 
-	echo "${TIME_STAMP} ${i}" >> plate_log.txt 
-	echo "${i}" >> plate_state.txt 
-	cat plate_state.txt | uniq > plate_state_sorting.txt 
-	mv plate_state_sorting.txt plate_state.txt && ((PLATECOUNT++)) ; 
-done 
-	
+else
+
+	acquire_plates
+	acquire_plate_state
+fi
 
 
 #STATE logic - license plate mapping to human
+#
 
-#DRIVER1 = LICENSEPLATENUMBER
-DRIVER1=$(whereitis XXXYYY)
-DRIVER2=$(whereitis YYYXXX)
-
-#DUMP PRESENCE STATE OF DRIVER PLATES - 1=PRESENT 0=ABSENT
-echo DRIVER1 = "${DRIVER1}"
-echo DRIVER2 = "${DRIVER2}"
+for i in ${DRIVERS} ; do
+	echo "$(echo ${i} | awk -F_ '{print $1}')" = $(whereitis $(echo ${i} | awk -F_ '{print $2}'))
+	export $(echo "${i}" | awk -F_ '{print $1}')=$(whereitis $(echo ${i} | awk -F_ '{print $2}'))
+done
 
 
-#DRIVER1_ACTIONS
 
-if [ "${DRIVER1}" = 1 ]; then
-	echo "DRIVER1 IS IN THE HOUSE"
-fi
- 
