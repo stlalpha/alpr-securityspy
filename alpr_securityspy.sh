@@ -12,7 +12,7 @@
 #current inventory of the viewing area of the camera based on its last motion capture.
 #
 #You can run it with --daemon with --interval=X and every X seconds it will parse the available jpg's for license plates and will update the state file
-
+#
 
 DAEMON=0
 PLATECOUNT=0
