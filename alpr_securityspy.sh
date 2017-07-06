@@ -20,6 +20,7 @@ INTERVAL=5
 NUKEJPGS=0
 PLATES_NOOP=0
 FETCHIT=0
+TIME_STAMP=$(date +%m-%d-%Y-%H:%M)
 
 
  usage()
@@ -37,8 +38,8 @@ FETCHIT=0
 }
 
 while [ "$1" != "" ]; do
-    PARAM=$(echo $1 | awk -F= '{print $1}')
-    VALUE=$(echo $1 | awk -F= '{print $2}')
+    PARAM=$(echo "${1}" | awk -F= '{print $1}')
+    VALUE=$(echo "${1}" | awk -F= '{print $2}')
     case $PARAM in
         -h | --help)
             usage
@@ -46,7 +47,7 @@ while [ "$1" != "" ]; do
             ;;
         --fetch)
 		   FETCHIT=1
-		   FETCHURLSTRING="${VALUE}"
+		   FETCHURLSTRING=${VALUE}
 		   ;;
         --nuke)
 		    NUKEJPGS=1
@@ -151,7 +152,7 @@ acquire_drivers()
 		if [ "${PLATES_NOOP}" = 1 ] ; then
 			echo "acquire_drivers - nothing to do..."
 		else
-		for i in $"{PLATES[@]}"; do 
+		for i in "${PLATES[@]}"; do 
 		if [ "${DAEMON}" = 0 ] ; then
 		echo "${TIME_STAMP}" "${i}" >> plate_log.txt 
 	fi
@@ -166,7 +167,6 @@ fi
 
 #main
 
-TIME_STAMP=$(date +%m-%d-%Y-%H:%M)
 
 
 check_alpr
